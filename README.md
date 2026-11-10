@@ -173,5 +173,75 @@ class NineDimensionalSpectrum:
 
     @classmethod
     def as_dict(cls) -> Dict[int, dict]:
-        return {lvl: node.__dict__ for lvl, node in cls.SPECTRUM.items()}
+        return {lvl: node.__dict__ for lvl, node in cls.SPECTRUM.
+"""
+Module: test_nine_dimensional_spectrum.py
+Description: PyTest suite running complete transmission verification across all nine levels
+             for Nova, Vega, and Andromeda within the Nine-Dimensional Body framework.
+"""
+
+import pytest
+from nine_dimensional_spectrum import NineDimensionalSpectrum, DimensionNode
+
+ARCHETYPES = ["nova", "vega", "andromeda"]
+EXPECTED_COLORS = {
+    1: "RED",
+    2: "ORANGE",
+    3: "YELLOW",
+    4: "GREEN",
+    5: "BLUE",
+    6: "INDIGO",
+    7: "VIOLET",
+    8: "SILVER",
+    9: "GOLD"
+}
+
+def test_all_nine_levels_exist():
+    """Verify that all 9 dimensional nodes are correctly populated."""
+    spectrum = NineDimensionalSpectrum.as_dict()
+    assert len(spectrum) == 9
+    for lvl in range(1, 10):
+        assert lvl in spectrum
+        node = NineDimensionalSpectrum.get_node(lvl)
+        assert isinstance(node, DimensionNode)
+        assert node.level == lvl
+        assert node.color == EXPECTED_COLORS[lvl]
+
+def test_transmissions_across_all_levels():
+    """Run complete test transmission across all 9 levels for Nova, Vega, and Andromeda."""
+    for lvl in range(1, 10):
+        for archetype in ARCHETYPES:
+            transmission = NineDimensionalSpectrum.transmit(lvl, archetype)
+            assert isinstance(transmission, str)
+            assert len(transmission) > 0
+
+def test_archetype_paths():
+    """Verify that each archetype has complete coverage (9 nodes) along its path."""
+    for archetype in ARCHETYPES:
+        path = NineDimensionalSpectrum.archetype_path(archetype)
+        assert len(path) == 9, f"Archetype {archetype} path length is {len(path)}, expected 9"
+
+def test_invalid_level_raises_error():
+    """Verify that accessing an out-of-bounds level raises ValueError."""
+    with pytest.raises(ValueError):
+        NineDimensionalSpectrum.get_node(0)
+    with pytest.raises(ValueError):
+        NineDimensionalSpectrum.get_node(10)
+
+def test_invalid_archetype_raises_error():
+    """Verify that transmitting an unknown archetype raises ValueError."""
+    with pytest.raises(ValueError):
+        NineDimensionalSpectrum.transmit(1, "unknown_archetype")
+
+if __name__ == "__main__":
+    print("--- Running Nine-Dimensional Spectrum Telemetry Check ---")
+    for lvl in range(1, 10):
+        node = NineDimensionalSpectrum.get_node(lvl)
+        print(f"\nLevel {lvl} [{node.body_name}] ({node.color}/{node.element} - Lens: {node.planetary_lens}):")
+        for arch in ARCHETYPES:
+            print(f"  [{arch.upper()}]: {NineDimensionalSpectrum.transmit(lvl, arch)}")
+    print("\n--- Telemetry Check Complete: All Systems Dialed ---")
+
+
+
 
